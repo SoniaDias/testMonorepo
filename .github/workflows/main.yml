@@ -1,4 +1,4 @@
-name: CxFlow-GitHub-Pull-Request
+name: SAST scan in diferent folders of the Repo
 
 on:
   pull_request:
@@ -12,6 +12,7 @@ jobs:
     steps:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - uses: actions/checkout@v2
+    
     - name: Checkmarx CxFlow Action
       uses: checkmarx-ts/checkmarx-cxflow-github-action@v1.4
       with:
@@ -24,4 +25,4 @@ jobs:
         incremental: false
         break_build: false
         scanners: sast
-        params: --checkmarx.settings-override=true --checkmarx.exclude-files=common.php
+        params: --checkmarx.exclude-folders=common.php
