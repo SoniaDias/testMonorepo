@@ -1,4 +1,4 @@
-name: Checkmarx SAST Scan Monorepos
+name: Checkmarx SAST Scan Monorepo
 on:
   push:
     branches:
