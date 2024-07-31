@@ -25,3 +25,4 @@ jobs:
         incremental: false
         break_build: false
         scanners: sast
+        params: --checkmarx.exclude-folder=test
