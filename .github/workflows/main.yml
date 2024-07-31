@@ -29,11 +29,13 @@ jobs:
         Expand-Archive -Path $zipFile -DestinationPath $destinationFolder -Force
     - name: Run CLI
       run: |
+        $folders = @("testMonorepo1", "testMonorepo2")
+        foreach ($folder in $folders) {
         $cliPath = "$env:GITHUB_WORKSPACE/CxConsolePlugin-1.1.30"
         $cliExecutable = "runCxConsole.cmd"
-        $args = @("Scan")
+        $args = @("Scan", "-CxServer", "${CHECKMARX_SERVER}", "-ProjectName", "${CHECKMARX_PROJECT}/$folder", "-LocationPath", "$GITHUB_WORKSPACE/$folder" "-Username", "${CHECKMARX_USERNAME}" "-Password", "${CHECKMARX_PASSWORD}" "-preset", “Checkmarx Default”)
 
         # Run the CLI command
         & "$cliPath\$cliExecutable" $args
-        
+        }
 
