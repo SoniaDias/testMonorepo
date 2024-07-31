@@ -1,44 +1,62 @@
-name: SAST scan in diferent folders of the Repo
+name: SAST scan in different folders of the Repo
 
 on:
   pull_request:
-    types: [opened, reopened, synchronize] #Types specify which pull request events will trigger the workflow. For more events refer Github Actions documentation.
+    types: [opened, reopened, synchronize] # Types specify which pull request events will trigger the workflow. For more events refer GitHub Actions documentation.
     branches:
-    - master
-    - main
+      - master
+      - main
+
 jobs:
   build:
     runs-on: windows-latest
+
     steps:
-    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - uses: actions/checkout@v2
     
     - name: Run PowerShell Hello
       run: |
-        # Run a PowerShell script inline
         pwsh -Command "Write-Host 'Hello from PowerShell!'"
+    
     - name: Download ZIP file
       run: |
         $url = "https://download.checkmarx.com/9.5.0/Plugins/CxConsolePlugin-1.1.30.zip"
         $outputFile = "$env:GITHUB_WORKSPACE/CxConsolePlugin-1.1.30.zip"
         Invoke-WebRequest -Uri $url -OutFile $outputFile
+    
     - name: Unzip file
       run: |
         $zipFile = "$env:GITHUB_WORKSPACE/CxConsolePlugin-1.1.30.zip"
         $destinationFolder = "$env:GITHUB_WORKSPACE/CxConsolePlugin-1.1.30"
         Expand-Archive -Path $zipFile -DestinationPath $destinationFolder -Force
+    
     - name: Run CLI
       run: |
-        $server = "$env:CHECKMARX_SERVER"
-        $server
+        $server = "${{ secrets.CHECKMARX_SERVER }}"
+        $projectName = "${{ secrets.CHECKMARX_PROJECT }}"
+        $username = "${{ secrets.CHECKMARX_USERNAME }}"
+        $password = "${{ secrets.CHECKMARX_PASSWORD }}"
         $folders = @("testMonorepo1", "testMonorepo2")
+
         foreach ($folder in $folders) {
-        $cliPath = "$env:GITHUB_WORKSPACE/CxConsolePlugin-1.1.30"
-        $cliExecutable = "runCxConsole.cmd"
-        
-        $args = @("Scan", "-CxServer", "-v", $server, "-ProjectName", "${CHECKMARX_PROJECT}/$folder", "-LocationPath", "$GITHUB_WORKSPACE/$folder", "-cxuser", "${CHECKMARX_USERNAME}", "-cxpassword", "${CHECKMARX_PASSWORD}", "-preset", “Checkmarx Default”)
+          $cliPath = "$env:GITHUB_WORKSPACE/CxConsolePlugin-1.1.30"
+          $cliExecutable = "runCxConsole.cmd"
+          
+          # Build the arguments array
+          $args = @(
+            "Scan", 
+            "-CxServer", $server, 
+            "-v", 
+            "-ProjectName", "$projectName/$folder", 
+            "-LocationPath", "$env:GITHUB_WORKSPACE/$folder", 
+            "-cxuser", $username, 
+            "-cxpassword", $password, 
+            "-preset", "Checkmarx Default"
+          )
 
-        # Run the CLI command
-        & "$cliPath\$cliExecutable" $args
+          # Debug output
+          Write-Host "Running command: & `"$cliPath\$cliExecutable`" $($args -join ' ')"
+
+          # Run the CLI command
+          & "$cliPath\$cliExecutable" $args
         }
-
