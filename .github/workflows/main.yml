@@ -1,4 +1,4 @@
-name: SAST scan in diferent folders of the Repo
+name: SAST scan in diferent folders of the Repoiojoi
 
 on:
   pull_request:
