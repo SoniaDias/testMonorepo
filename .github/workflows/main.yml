@@ -1,33 +1,18 @@
-name: Checkmarx SAST Scan
+name: CxFlow-GitHub-Pull-Request
 
 on:
-  push:
-    branches:
-      - main
   pull_request:
+    types: [opened, reopened, synchronize] #Types specify which pull request events will trigger the workflow. For more events refer Github Actions documentation.
     branches:
-      - main
-
+    - master
+    - main
 jobs:
-  sast:
+  build:
     runs-on: ubuntu-latest
-
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
-
-    - name: Run Checkmarx SAST per folder
-      env:
-        CHECKMARX_USERNAME: ${{ secrets.CHECKMARX_USERNAME }}
-        CHECKMARX_PASSWORD: ${{ secrets.CHECKMARX_PASSWORD }}
-        CHECKMARX_SERVER: ${{ secrets.CHECKMARX_SERVER }}
-        CHECKMARX_PROJECT: ${{ secrets.CHECKMARX_PROJECT }}
-      #run: |
-       # FOLDERS=("testMonorepo1" "testMonorepo2")
-        #for folder in "${FOLDERS[@]}"; do
-      #    echo "Scanning folder: $folder"
-          
-       # done
+    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+    - uses: actions/checkout@v2
+    - name: Checkmarx CxFlow Action
       uses: checkmarx-ts/checkmarx-cxflow-github-action@v1.4
       with:
         project: ${{ github.repository }}
@@ -35,7 +20,8 @@ jobs:
         checkmarx_url: ${{ secrets.CHECKMARX_URL }}   # To be stored in GitHub Secrets.
         checkmarx_username: ${{ secrets.CHECKMARX_USERNAME }}  # To be stored in GitHub Secrets.
         checkmarx_password: ${{ secrets.CHECKMARX_PASSWORD }}  # To be stored in GitHub Secrets.
+        checkmarx_client_secret: ${{ secrets.CHECKMARX_CLIENT_SECRET }}  # To be stored in GitHub Secrets.
         incremental: false
         break_build: false
         scanners: sast
-
+        params: --checkmarx.settings-override=true --checkmarx.exclude-files=common.php
