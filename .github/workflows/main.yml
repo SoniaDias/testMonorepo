@@ -30,7 +30,7 @@ jobs:
     - name: Run CLI
       run: |
         $server = "$env:CHECKMARX_SERVER"
-        $server
+        Write-Host $server
         $folders = @("testMonorepo1", "testMonorepo2")
         foreach ($folder in $folders) {
         $cliPath = "$env:GITHUB_WORKSPACE/CxConsolePlugin-1.1.30"
