@@ -25,4 +25,4 @@ jobs:
         incremental: false
         break_build: false
         scanners: sast
-        params: --checkmarx.exclude-file=test
+        params: --checkmarx.exclude-file=test.php
