@@ -1,42 +1,26 @@
 name: Checkmarx SAST Scan Monorepo
-
 on:
   push:
     branches:
       - main
+      - master
   pull_request:
     branches:
       - main
-
+      - master
 jobs:
-  sast:
+  build:
     runs-on: ubuntu-latest
-
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
-
-    - name: Set up Checkmarx CLI
-      run: |
-        # Download and set up Checkmarx CLI (example)
-        wget https://example.com/path/to/CxConsole -O /usr/local/bin/CxConsole
-        chmod +x /usr/local/bin/CxConsole
-        ls /usr/local/bin/CxConsole
-
-    - name: Run Checkmarx SAST per folder
-      env:
-        CHECKMARX_USERNAME: ${{ secrets.CHECKMARX_USERNAME }}
-        CHECKMARX_PASSWORD: ${{ secrets.CHECKMARX_PASSWORD }}
-        CHECKMARX_SERVER: ${{ secrets.CHECKMARX_SERVER }}
-        CHECKMARX_PROJECT: ${{ secrets.CHECKMARX_PROJECT }}
-      run: |
-        FOLDERS=("folder1" "folder2" "folder3")
-        for folder in "${FOLDERS[@]}"; do
-          /usr/local/bin/CxConsole Scan -v \
-            -CxServer "${CHECKMARX_SERVER}" \
-            -ProjectName "${CHECKMARX_PROJECT}/$folder" \
-            -LocationPath "$GITHUB_WORKSPACE/$folder" \
-            -Username "${CHECKMARX_USERNAME}" \
-            -Password "${CHECKMARX_PASSWORD}" \
-            -ReportPDF "$folder-scan-report.pdf"
-        done
+    - uses: actions/checkout@v2
+    - name: Checkmarx CxFlow Action
+      uses: checkmarx-ts/checkmarx-cxflow-github-action@v1.4
+      with:
+        project: ${{ github.repository }}
+        team: ${{ secrets.CHECKMARX_TEAMS }}
+        checkmarx_url: ${{ secrets.CHECKMARX_SERVER }}   # To be stored in GitHub Secrets.
+        checkmarx_username: ${{ secrets.CHECKMARX_USERNAME }}  # To be stored in GitHub Secrets.
+        checkmarx_password: ${{ secrets.CHECKMARX_PASSWORD }}  # To be stored in GitHub Secrets.
+        incremental: false
+        break_build: false
+        scanners: sast
