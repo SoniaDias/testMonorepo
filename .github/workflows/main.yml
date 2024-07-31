@@ -16,22 +16,26 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
-    - name: Set up Checkmarx CLI
-      run: |
-        # Download and set up Checkmarx CLI (example)
-        wget https://download.checkmarx.com/9.5.0/Plugins/CxConsolePlugin-1.1.30.zip -O /usr/local/bin/CxConsole
-        chmod +x /usr/local/bin/CxConsole
-        ls /usr/local/bin/CxConsole
-
     - name: Run Checkmarx SAST per folder
       env:
         CHECKMARX_USERNAME: ${{ secrets.CHECKMARX_USERNAME }}
         CHECKMARX_PASSWORD: ${{ secrets.CHECKMARX_PASSWORD }}
         CHECKMARX_SERVER: ${{ secrets.CHECKMARX_SERVER }}
         CHECKMARX_PROJECT: ${{ secrets.CHECKMARX_PROJECT }}
-      run: |
-        FOLDERS=("testMonorepo1" "testMonorepo2")
-        for folder in "${FOLDERS[@]}"; do
-          echo "Scanning folder: $folder"
+      #run: |
+       # FOLDERS=("testMonorepo1" "testMonorepo2")
+        #for folder in "${FOLDERS[@]}"; do
+      #    echo "Scanning folder: $folder"
           
-        done
+       # done
+      uses: checkmarx-ts/checkmarx-cxflow-github-action@v1.4
+      with:
+        project: ${{ github.repository }}
+        team: ${{ secrets.CHECKMARX_TEAMS }}
+        checkmarx_url: ${{ secrets.CHECKMARX_URL }}   # To be stored in GitHub Secrets.
+        checkmarx_username: ${{ secrets.CHECKMARX_USERNAME }}  # To be stored in GitHub Secrets.
+        checkmarx_password: ${{ secrets.CHECKMARX_PASSWORD }}  # To be stored in GitHub Secrets.
+        incremental: false
+        break_build: false
+        scanners: sast
+
