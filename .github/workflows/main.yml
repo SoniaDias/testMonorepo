@@ -13,10 +13,27 @@ jobs:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - uses: actions/checkout@v2
     
-    - name: Run PowerShell script
+    - name: Run PowerShell Hello
       run: |
         # Run a PowerShell script inline
         pwsh -Command "Write-Host 'Hello from PowerShell!'"
-        
+    - name: Download ZIP file
+      run: |
+        $url = "https://download.checkmarx.com/9.5.0/Plugins/CxConsolePlugin-1.1.30.zip"
+        $outputFile = "$env:GITHUB_WORKSPACE/CxConsolePlugin-1.1.30.zip"
+        Invoke-WebRequest -Uri $url -OutFile $outputFile
+    - name: Unzip file
+      run: |
+        $zipFile = "$env:GITHUB_WORKSPACE/CxConsolePlugin-1.1.30.zip"
+        $destinationFolder = "$env:GITHUB_WORKSPACE/CxConsolePlugin-1.1.30"
+        Expand-Archive -Path $zipFile -DestinationPath $destinationFolder -Force
+    - name: Run CLI
+      run: |
+        $cliPath = "$env:GITHUB_WORKSPACE/CxConsolePlugin-1.1.30"
+        $cliExecutable = "runCxConsole.cmd"
+        $args = @("Scan")
 
+        # Run the CLI command
+        & "$cliPath\$cliExecutable" $args
+        
 
