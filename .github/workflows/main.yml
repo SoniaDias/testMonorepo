@@ -16,7 +16,7 @@ jobs:
     - name: Checkmarx CxFlow Action
       uses: checkmarx-ts/checkmarx-cxflow-github-action@v1.4
       with:
-        project: ${{ github.repository }}
+        project: Monorepo4
         team: ${{ secrets.CHECKMARX_TEAMS }}
         checkmarx_url: ${{ secrets.CHECKMARX_SERVER }}   # To be stored in GitHub Secrets.
         checkmarx_username: ${{ secrets.CHECKMARX_USERNAME }}  # To be stored in GitHub Secrets.
@@ -25,4 +25,4 @@ jobs:
         incremental: false
         break_build: false
         scanners: sast
-        params: --checkmarx.settings-override=true --checkmarx.exclude-files=common
+        params: --checkmarx.settings-override=true --checkmarx.include-files=**/common/**
