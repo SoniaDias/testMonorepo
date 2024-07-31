@@ -1,0 +1,41 @@
+name: Checkmarx SAST Scan
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  sast:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Checkmarx CLI
+      run: |
+        # Download and set up Checkmarx CLI (example)
+        wget https://example.com/path/to/CxConsole -O /usr/local/bin/CxConsole
+        chmod +x /usr/local/bin/CxConsole
+
+    - name: Run Checkmarx SAST per folder
+      env:
+        CHECKMARX_USERNAME: ${{ secrets.CHECKMARX_USERNAME }}
+        CHECKMARX_PASSWORD: ${{ secrets.CHECKMARX_PASSWORD }}
+        CHECKMARX_SERVER: ${{ secrets.CHECKMARX_SERVER }}
+        CHECKMARX_PROJECT: ${{ secrets.CHECKMARX_PROJECT }}
+      run: |
+        FOLDERS=("folder1" "folder2" "folder3")
+        for folder in "${FOLDERS[@]}"; do
+          /usr/local/bin/CxConsole Scan -v \
+            -CxServer "${CHECKMARX_SERVER}" \
+            -ProjectName "${CHECKMARX_PROJECT}/$folder" \
+            -LocationPath "$GITHUB_WORKSPACE/$folder" \
+            -Username "${CHECKMARX_USERNAME}" \
+            -Password "${CHECKMARX_PASSWORD}" \
+            -ReportPDF "$folder-scan-report.pdf"
+        done
