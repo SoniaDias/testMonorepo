@@ -13,10 +13,10 @@ jobs:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - uses: actions/checkout@v2
     
-    - name: Checkmarx CxFlow Action
+    - name: Checkmarx CxFlow Action 1
       uses: checkmarx-ts/checkmarx-cxflow-github-action@v1.4
       with:
-        project: ${{ github.repository }}
+        project: Monorepo 3
         team: ${{ secrets.CHECKMARX_TEAMS }}
         checkmarx_url: ${{ secrets.CHECKMARX_SERVER }}   # To be stored in GitHub Secrets.
         checkmarx_username: ${{ secrets.CHECKMARX_USERNAME }}  # To be stored in GitHub Secrets.
