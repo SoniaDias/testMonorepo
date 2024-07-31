@@ -21,6 +21,7 @@ jobs:
         # Download and set up Checkmarx CLI (example)
         wget https://download.checkmarx.com/9.5.0/Plugins/CxConsolePlugin-1.1.30.zip -O /usr/local/bin/CxConsole
         chmod +x /usr/local/bin/CxConsole
+        echo /usr/local/bin/CxConsole
 
     - name: Run Checkmarx SAST per folder
       env:
