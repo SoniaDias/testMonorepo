@@ -33,7 +33,7 @@ jobs:
         foreach ($folder in $folders) {
         $cliPath = "$env:GITHUB_WORKSPACE/CxConsolePlugin-1.1.30"
         $cliExecutable = "runCxConsole.cmd"
-        $args = @("Scan", "-CxServer", "$env:CHECKMARX_SERVER", "-ProjectName", "${CHECKMARX_PROJECT}/$folder", "-LocationPath", "$GITHUB_WORKSPACE/$folder", "-cxuser", "${CHECKMARX_USERNAME}", "-cxpassword", "${CHECKMARX_PASSWORD}", "-preset", “Checkmarx Default”)
+        $args = @("Scan", "-CxServer", "-v", "$env:CHECKMARX_SERVER", "-ProjectName", "${CHECKMARX_PROJECT}/$folder", "-LocationPath", "$GITHUB_WORKSPACE/$folder", "-cxuser", "${CHECKMARX_USERNAME}", "-cxpassword", "${CHECKMARX_PASSWORD}", "-preset", “Checkmarx Default”)
 
         # Run the CLI command
         & "$cliPath\$cliExecutable" $args
