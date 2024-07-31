@@ -39,7 +39,7 @@ jobs:
         $folders = @("testMonorepo1", "testMonorepo2")
 
         foreach ($folder in $folders) {
-          $cliPath = "$env:GITHUB_WORKSPACE/CxConsolePlugin-1.1.30"
+          $cliPath = "$env:GITHUB_WORKSPACE\CxConsolePlugin-1.1.30"
           $cliExecutable = "runCxConsole.cmd"
           
           # Build the arguments array
@@ -48,7 +48,8 @@ jobs:
             "-CxServer", $server, 
             "-v", 
             "-ProjectName", "$projectName/$folder", 
-            "-LocationPath", "$env:GITHUB_WORKSPACE/$folder", 
+            "-LocationType", "folder",
+            "-LocationPath", "$env:GITHUB_WORKSPACE\$folder", 
             "-cxuser", $username, 
             "-cxpassword", $password, 
             "-preset", "Checkmarx Default"
